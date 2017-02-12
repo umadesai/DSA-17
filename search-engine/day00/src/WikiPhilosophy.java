@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.jsoup.nodes.Element;
@@ -39,10 +40,26 @@ public class WikiPhilosophy {
 		// Right now, this method tries the first link on the page, and if it is the destination, it returns true
 		// TODO: fix this method.
 		// Loop until reach limit, get stuck in a loop, reach a page with no links, or reach the destination
-		Element elt = getFirstValidLink(source);
-		String url = elt.attr("abs:href");
-		if (url.equals(destination))
+
+		String url = source;
+		if (url.equals(destination)){
 			return true;
+		}
+		Element elt = getFirstValidLink(url);
+		url = elt.attr("abs:href");
+		HashMap<Element,Integer> maps = new HashMap<>();
+		while (elt!=null&&!maps.containsKey(elt)&&limit>0) {
+			if (url.equals(destination)) {
+				return true;
+			}
+			else {
+				maps.put(elt,1);
+				elt = getFirstValidLink(url);
+				url = elt.attr("abs:href");
+				limit--;
+			}
+		}
+
 		return false;
 	}
 
