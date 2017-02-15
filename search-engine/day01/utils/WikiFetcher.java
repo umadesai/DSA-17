@@ -24,6 +24,7 @@ public class WikiFetcher {
 		Element content = doc.getElementById("mw-content-text");
 
 		Elements paras = content.select("p");
+//		System.out.println(paras);
 		return paras;
 	}
 

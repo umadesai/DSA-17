@@ -12,11 +12,16 @@ public class Index {
 	// Index: map of words to URL and their counts
 	private Map<String, Set<TermCounter>> index = new HashMap<>();
 	Jedis jedis;
+	private Set stop;
 
-	public Index(Jedis jedis) {
+	public Index(Jedis jedis) throws IOException {
 		this.jedis = jedis;
+		StopWords stops = new StopWords();
+		stop = stops.getStopWords();
 	}
-	public Index() {
+	public Index() throws IOException {
+		StopWords stops = new StopWords();
+		stop = stops.getStopWords();
 	}
 
 	/**
@@ -58,7 +63,9 @@ public class Index {
 		Set<String> set = jedis.smembers(urlSetKey(term));
 		return set;
 	}
-
+	public boolean containsURL(String term){
+		return (index.containsKey(term));
+	}
 	/**
 	 * Returns the number of times the given term appears at the given URL.
 	 */
@@ -113,8 +120,10 @@ public class Index {
 		TermCounter counter = new TermCounter(url.toString());
 		counter.processElements(paragraphs);
 		for (String key:counter.keySet()){
+			if (!stop.contains(key)){
 			add(key,counter);
 		}
+	}
 		// push the contents of the TermCounter to Redis
 		pushTermCounterToRedis(counter);
 	}
@@ -150,12 +159,8 @@ public class Index {
 		Map<String, Integer> map = indexer.getCounts("data");
 		System.out.println(map.get(url));
 //		System.out.print(map.keySet());
-//		If we look up url in the result, map, we should get 339, which is the number
-//		of times the word “the” appears on https://en.wikipedia.org/wiki/Java_
-//		(programming_language)the Java Wikipedia page (that is, the version we
-//				saved).
 
-		indexer.printIndex();
+//		indexer.printIndex();
 	}
 
 }

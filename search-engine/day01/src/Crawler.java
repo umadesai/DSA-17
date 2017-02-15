@@ -34,7 +34,22 @@ public class Crawler {
 	 * @throws IOException
 	 */
 	public void crawl(int limit) throws IOException {
-		// TODO
+		if (queue.isEmpty()) {
+			throw new IOException();
+		}
+
+		//System.out.println("Crawling " + url);
+		while (limit > 0) {
+			String url = queue.poll();
+			if (index.containsURL(url)) {
+				System.out.println("Already indexed.");
+			} else {
+				Elements paragraphs = wf.fetchWikipedia(url);
+				index.indexPage(url, paragraphs);
+				queueInternalLinks(paragraphs);
+			}
+			limit--;
+		}
 	}
 
 	void queueInternalLinks(Elements paragraphs) {
@@ -59,7 +74,7 @@ public class Crawler {
 	public static void main(String[] args) throws IOException {
 		// make a WikiCrawler
 		Jedis jedis = JedisMaker.make();
-		Index index = new Index();
+		Index index = new Index(jedis);
 		String source = "https://en.wikipedia.org/wiki/Java_(programming_language)";
 		Crawler wc = new Crawler(source, index);
 
@@ -67,16 +82,16 @@ public class Crawler {
 		Elements paragraphs = wf.fetchWikipedia(source);
 		wc.queueInternalLinks(paragraphs);
 
-        // TODO: Crawl outward starting at source
+        wc.crawl(20);
 
 		// TODO: Test that your index contains multiple pages.
 		// Here is some sample code that tests your index, which assumes
 		// you have written a getCounts() method in Index, which returns
 		// a map from {url: count} for a given keyword
-		// Map<String, Integer> map = index.getCounts("programming");
-		// for (Map.Entry<String, Integer> entry: map.entrySet()) {
-		// 	System.out.println(entry);
-		// }
+		 Map<String, Integer> map = index.getCounts("programming");
+		 for (Map.Entry<String, Integer> entry: map.entrySet()) {
+		 	System.out.println(entry);
+		 }
 
 	}
 }
