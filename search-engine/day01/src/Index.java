@@ -37,10 +37,16 @@ public class Index {
 		return index.get(term);
 	}
 
+	/**
+	 * Takes a search term and returns the Redis key of its URLSet.
+	 */
 	private String urlSetKey(String term) {
 		return "URLSet:" + term;
 	}
 
+	/**
+	 * Takes a URL and returns the Redis key of its TermCounter.
+	 */
 	private String termCounterKey(String url) {
 		return "TermCounter:" + url;
 	}
@@ -63,7 +69,9 @@ public class Index {
 	}
 
 	/**
-	 * Pushes the contents of the TermCounter to Redis.
+	 * Pushes the contents of the TermCounter to Redis. Loops through the terms in the TermCounter.
+	 * Finds or creates a TermCounter on Redis, then adds a field for the new term.
+	 * Finds or creates a URLSet on Redis, then adds the current URL.
 	 */
 	public List<Object> pushTermCounterToRedis(TermCounter tc) {
 		Transaction t = jedis.multi();
@@ -81,7 +89,10 @@ public class Index {
 		List<Object> res = t.exec();
 		return res;
 	}
-
+/**
+ *	Takes a search term and returns a map from each URL where the term appears to the
+ *	number of times it appears there.
+ */
 	public Map<String, Integer> getCounts(String term) {
 		Map<String, Integer> map = new HashMap<String, Integer>();
 		Set<String> urls = getURLs(term);
@@ -92,6 +103,11 @@ public class Index {
 		return map;
 	}
 
+	/**
+	 * Takes a URL and a JSoup Elements object that contains the DOM tree of the paragraphs we want to index.
+	 * Makes a Java TermCounter for the contents of the page, using code from a previous exercise. Pushes the
+	 * contents of the TermCounter to Redis.
+	 */
 	public void indexPage(String url, Elements paragraphs) {
 		// make a TermCounter and count the terms in the paragraphs
 		TermCounter counter = new TermCounter(url.toString());
