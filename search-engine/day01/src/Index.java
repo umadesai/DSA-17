@@ -37,7 +37,6 @@ public class Index {
 		set.add(tc);
 		}
 
-
 	public Set<TermCounter> get(String term) {
 		return index.get(term);
 	}
@@ -63,9 +62,14 @@ public class Index {
 		Set<String> set = jedis.smembers(urlSetKey(term));
 		return set;
 	}
+
+	/**
+	 * Checks if the index contains the URl. Returns boolean.
+	 */
 	public boolean containsURL(String term){
 		return (index.containsKey(term));
 	}
+
 	/**
 	 * Returns the number of times the given term appears at the given URL.
 	 */
@@ -86,8 +90,7 @@ public class Index {
 		String hashname = termCounterKey(url);
 // if this page has already been indexed; delete the old hash
 		t.del(hashname);
-// for each term, add an entry in the termcounter and a new
-// member of the index
+// for each term, add an entry in the termcounter and a new member of the index
 		for (String term: tc.keySet()) {
 			Integer count = tc.get(term);
 			t.hset(hashname, term, count.toString());
@@ -112,8 +115,7 @@ public class Index {
 
 	/**
 	 * Takes a URL and a JSoup Elements object that contains the DOM tree of the paragraphs we want to index.
-	 * Makes a Java TermCounter for the contents of the page, using code from a previous exercise. Pushes the
-	 * contents of the TermCounter to Redis.
+	 * Makes a Java TermCounter for the contents of the page and pushes the contents of the TermCounter to Redis.
 	 */
 	public void indexPage(String url, Elements paragraphs) {
 		// make a TermCounter and count the terms in the paragraphs
@@ -124,7 +126,6 @@ public class Index {
 			add(key,counter);
 		}
 	}
-		// push the contents of the TermCounter to Redis
 		pushTermCounterToRedis(counter);
 	}
 

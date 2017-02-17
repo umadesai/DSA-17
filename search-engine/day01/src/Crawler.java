@@ -37,8 +37,6 @@ public class Crawler {
 		if (queue.isEmpty()) {
 			throw new IOException();
 		}
-
-		//System.out.println("Crawling " + url);
 		while (limit > 0) {
 			String url = queue.poll();
 			if (index.containsURL(url)) {
