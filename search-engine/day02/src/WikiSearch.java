@@ -15,12 +15,16 @@ public class WikiSearch {
     }
 
     public Integer getRelevance(String url) {
-        // TODO
-        return null;
+        Integer relevance = map.get(url);
+        if (relevance == null) {
+            return 0;
+        } else {
+            return relevance;
+        }
     }
 
     // Prints the contents in order of term frequency.
-    private  void print() {
+    private void print() {
         List<Entry<String, Integer>> entries = sort();
         for (Entry<String, Integer> entry: entries) {
             System.out.println(entry);
@@ -39,7 +43,7 @@ public class WikiSearch {
         return null;
     }
 
-    // Computes the intersection of two search results.
+    // Computes the difference of two search results.
     public WikiSearch minus(WikiSearch that) {
         // TODO
         return null;
@@ -48,7 +52,7 @@ public class WikiSearch {
     // Computes the relevance of a search with multiple terms.
     protected int totalRelevance(Integer rel1, Integer rel2) {
         // TODO
-        return 0;
+        return (map.get(rel1) + map.get(rel2));
     }
 
     // Sort the results by relevance.
@@ -63,7 +67,7 @@ public class WikiSearch {
         // TODO: Use the index to get a map from URL to count
 
         // Fix this
-        Map<String, Integer> map = null;
+        Map<String, Integer> map = index.getCounts(term);
 
         // Store the map locally in the WikiSearch
         return new WikiSearch(map);
