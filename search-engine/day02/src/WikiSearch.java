@@ -1,11 +1,11 @@
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
+import java.util.Comparator;
 
 import redis.clients.jedis.Jedis;
 
-public class WikiSearch {
+public class WikiSearch{
 
     // map from URLs that contain the term(s) to relevance score
     private Map<String, Integer> map;
@@ -34,33 +34,59 @@ public class WikiSearch {
     // Computes the union of two search results.
     public WikiSearch or(WikiSearch that) {
         // TODO
-        return null;
+//        Map<String, Integer> thatMap = that.map;
+        for(String url: that.map.keySet()){
+            map.put(url, this.getRelevance(url) + that.getRelevance(url));
+        }
+//        System.out.println(this.map.entrySet());
+        return this;
     }
 
     // Computes the intersection of two search results.
     public WikiSearch and(WikiSearch that) {
         // TODO
-        return null;
+//        Map<String, Integer> thatMap = that.map;
+        Map<String, Integer> intersection = new HashMap<>();
+        for(String url: that.map.keySet()){
+            if(map.containsKey(url)){
+                intersection.put(url, this.getRelevance(url) + that.getRelevance(url));
+            }
+        }
+        return new WikiSearch(intersection);
     }
 
     // Computes the difference of two search results.
     public WikiSearch minus(WikiSearch that) {
         // TODO
-        return null;
+//        Map<String, Integer> thatMap = that.map;
+        for(String url: that.map.keySet()){
+            if(map.containsKey(url)){
+                map.remove(url);
+            }
+        }
+        return this;
     }
 
     // Computes the relevance of a search with multiple terms.
     protected int totalRelevance(Integer rel1, Integer rel2) {
         // TODO
-        return (map.get(rel1) + map.get(rel2));
+        return (rel1 + rel2);
     }
 
     // Sort the results by relevance.
     public List<Entry<String, Integer>> sort() {
         // TODO
-        return null;
+        List<Entry<String, Integer>> sortList = new ArrayList<>(map.entrySet());
+//        Collections.sort must take in a list
+        Collections.sort(sortList, new Comparator<Entry>()
+        {
+            public int compare(Entry a, Entry b) {
+                return ((Comparable)a.getValue()).compareTo(b.getValue());
+            }
+        }
+        );
+        return sortList;
     }
-
 
     // Performs a search and makes a WikiSearch object.
     public static WikiSearch search(String term, Index index) {
