@@ -18,7 +18,7 @@ You will fill in the methods of WikiSearch.java to complete your search engine. 
 
 In `WikiSearch.java`:
 
-* `WikiSearch search(String term, JedisIndex index)`
+* `WikiSearch search(String term, Index index)`
 * `Integer getRelevance(String url)`
 * `int totalRelevance(Integer rel1, Integer rel2)`
 * `WikiSearch or(WikiSearch that)`
