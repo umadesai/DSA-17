@@ -47,6 +47,8 @@ One way of solving this in `O(N)` time is to look at every element until you fin
 
 #### 2-D Array
 
+**Note: This part of the assignment has been extended to 2/27. If you want to complete it now and get checked off you can. Otherwise, it will be part of your sorting day01 hw.**
+
 Now that you have warmed up, solve this same problem in two dimensions. An element is a peak in a two dimensional array if it is not less than any of its four non-diagonal neighbors (or at least the neighbors that exist, meaning values on the edges can also be peaks).
 
 ##### O(NlogN) Solution

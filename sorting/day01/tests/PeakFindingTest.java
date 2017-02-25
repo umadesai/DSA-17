@@ -1,6 +1,7 @@
 import org.junit.Test;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.Assert.assertTrue;
 
@@ -14,12 +15,17 @@ public class PeakFindingTest {
     }
 
     private void isValidTwoDSolution(int[][] arr, int[] sol) {
-        assertTrue(
-                (sol[0] == 0 || arr[sol[0]][sol[1]] >= arr[sol[0] - 1][sol[1]]) &&
-                        (sol[0] == arr.length - 1 || arr[sol[0]][sol[1]] >= arr[sol[0] + 1][sol[1]]) &&
-                        (sol[1] == 0 || arr[sol[0]][sol[1]] >= arr[sol[0]][sol[1] - 1]) &&
-                        (sol[0] == arr[0].length - 1 || arr[sol[0]][sol[1]] >= arr[sol[0]][sol[1] + 1])
-        );
+        boolean valid = true;
+        int value = arr[sol[0]][sol[1]];
+        if (sol[0] != 0 && value < arr[sol[0]-1][sol[1]])
+            valid = false;
+        if (sol[0] != arr.length-1 && value < arr[sol[0]+1][sol[1]])
+            valid = false;
+        if (sol[1] != 0 && value < arr[sol[0]][sol[1]-1])
+            valid = false;
+        if (sol[1] != arr[0].length-1 && value < arr[sol[0]][sol[1]+1])
+            valid = false;
+        assertTrue(valid);
     }
 
     @Test
@@ -125,6 +131,36 @@ public class PeakFindingTest {
             for (int j = 0; j < nums[0].length; j++) {
                 nums[i][j] = gen.nextInt() % 1000;
             }
+        }
+        isValidTwoDSolution(nums, PeakFinding.findTwoDPeak(nums));
+    }
+
+    @Test
+    public void TwoDTest7() {
+        int[][] nums = {
+                {1, 2, 6, 5, 3, 6, 7},
+                {1, 2, 5, 4, 3, 6, 7},
+                {1, 2, 5, 4, 3, 6, 7},
+                {1, 2, 3, 4, 3, 6, 7},
+                {1, 2, 5, 4, 3, 6, 7},
+                {1, 2, 5, 4, 3, 6, 7},
+                {1, 2, 5, 4, 3, 6, 7},
+        };
+        isValidTwoDSolution(nums, PeakFinding.findTwoDPeak(nums));
+    }
+
+    @Test
+    public void TwoDTest8() {
+        int[][] nums = new int[100][100];
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = 0; j < nums[0].length; j++) {
+                nums[i][j] = i + j;
+            }
+        }
+        for (int i = 0; i < 50; i++) {
+            int y = ThreadLocalRandom.current().nextInt(100);
+            int x = ThreadLocalRandom.current().nextInt(100);
+            nums[y][x] = ThreadLocalRandom.current().nextInt(201);
         }
         isValidTwoDSolution(nums, PeakFinding.findTwoDPeak(nums));
     }
