@@ -1,8 +1,3 @@
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,9 +6,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class BinarySearchTreeTest {
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
+
+public class AVLTreeTest {
     private Integer[][] inputs;
-    private BinarySearchTree<Integer>[] bsts;
+    private AVLTree<Integer>[] bsts;
 
     private Integer[] sorted(Integer[] A) {
         Integer[] sorted = Arrays.copyOf(A, A.length);
@@ -23,57 +21,35 @@ public class BinarySearchTreeTest {
 
     @Before
     public void setUp() throws Exception {
-        bsts = new BinarySearchTree[5];
+        bsts = new AVLTree[5];
         for (int i = 0; i < bsts.length; i++) {
-            bsts[i] = new BinarySearchTree<>();
+            bsts[i] = new AVLTree<>();
         }
         inputs = new Integer[5][];
-
         inputs[0] = new Integer[]{3,2,1,4};
-        bsts[0].addAll(inputs[0]);
-        assertThat(bsts[0].size(), is(4));
-        assertValidBST(bsts[0].root);
-
         inputs[1] = new Integer[]{3, 1, 2, 7, 10, -3, 5, -10, 16, 13};
-        bsts[1].addAll(inputs[1]);
-        assertThat(bsts[1].size(), is(10));
-        assertValidBST(bsts[1].root);
-
         inputs[2] = new Integer[]{-4,-3,-2,-1,0,1,2,3,4,5};
-        bsts[2].addAll(inputs[2]);
-        assertThat(bsts[2].size(), is(10));
-        assertValidBST(bsts[2].root);
-
         inputs[3] = new Integer[]{13, 12, 10, 5, 3, -1, -7, -10, -50};
-        bsts[3].addAll(inputs[3]);
-        assertThat(bsts[3].size(), is(9));
-        assertValidBST(bsts[3].root);
-
         inputs[4] = new Integer[]{23, 15, 10, 8, 40, 38, 37, 36, 24, 25, 26, 27};
-        bsts[4].addAll(inputs[4]);
-        assertThat(bsts[4].size(), is(12));
-        assertValidBST(bsts[4].root);
+
+        for(int i = 0; i < 5; i++) {
+            bsts[i].addAll(inputs[i]);
+            assertThat(bsts[i].size(), is(inputs[i].length));
+            assertValidAVL(bsts[i].root);
+        }
     }
 
     private void assertValidBST(TreeNode<Integer> n) {
-        if (n == null)
-            return;
+        if (n == null) return;
+
         if (n.leftChild != null)
             assertTrue(n.leftChild.key.compareTo(n.key) <= 0);
+
         if (n.rightChild != null)
             assertTrue(n.rightChild.key.compareTo(n.key) >= 0);
+
         assertValidBST(n.leftChild);
         assertValidBST(n.rightChild);
-    }
-
-    private void predTest(BinarySearchTree<Integer> bst, Integer[] input) {
-        Integer[] sorted = sorted(input);
-        for (int j = 0; j < sorted.length; j++) {
-            Integer predecessor = null;
-            if (j > 0)
-                predecessor = sorted[j-1];
-            assertThat(bst.findPredecessor(sorted[j]), is(predecessor));
-        }
     }
 
     @Test
@@ -85,35 +61,7 @@ public class BinarySearchTreeTest {
         assertValidBST(bst.root);
     }
 
-    @Test
-    public void testPredecessor() {
-        predTest(bsts[0], inputs[0]);
-        predTest(bsts[1], inputs[1]);
-        predTest(bsts[2], inputs[2]);
-        predTest(bsts[3], inputs[3]);
-        predTest(bsts[4], inputs[4]);
-    }
-
-    private void testSuccessor(BinarySearchTree<Integer> bst, Integer[] input) {
-        Integer[] sorted = sorted(input);
-        for (int j = 0; j < sorted.length; j++) {
-            Integer successor = null;
-            if (j < sorted.length - 1)
-                successor = sorted[j+1];
-            assertThat(bst.findSuccessor(sorted[j]), is(successor));
-        }
-    }
-
-    @Test
-    public void testSuccessor() {
-        testSuccessor(bsts[0], inputs[0]);
-        testSuccessor(bsts[1], inputs[1]);
-        testSuccessor(bsts[2], inputs[2]);
-        testSuccessor(bsts[3], inputs[3]);
-        testSuccessor(bsts[4], inputs[4]);
-    }
-
-    private void iotTest(BinarySearchTree<Integer> bst, Integer[] input) {
+    private void iotTest(AVLTree<Integer> bst, Integer[] input) {
         Integer[] expected = sorted(input);
         Object[] traversal = bst.inOrderTraversal().toArray();
         Integer[] received = Arrays.copyOf(traversal, traversal.length, Integer[].class);
@@ -130,7 +78,7 @@ public class BinarySearchTreeTest {
     }
 
 
-    private void delTest(BinarySearchTree<Integer> bst, Integer[] input) {
+    private void delTest(AVLTree<Integer> bst, Integer[] input) {
         Integer[] sorted = sorted(input);
         List<Integer> list = Arrays.asList(sorted);
         list = new ArrayList<>(list);
@@ -141,10 +89,25 @@ public class BinarySearchTreeTest {
             Integer[] expected = Arrays.copyOf(list.toArray(), list.size(), Integer[].class);
             Object[] traversal = bst.inOrderTraversal().toArray();
             Integer[] received = Arrays.copyOf(traversal, traversal.length, Integer[].class);
+            assertValidAVL(bst.root);
             assertArrayEquals(expected, received);
         }
     }
 
+    private int height(TreeNode node) {
+        if (node == null) return -1;
+        return 1+Math.max(height(node.leftChild), height(node.rightChild));
+    }
+
+
+    private void assertValidAVL(TreeNode<Integer> node){
+        if (node == null) return;
+        assertTrue(Math.abs(height(node.leftChild) - height(node.rightChild)) <= 1);
+        assertThat(node.height, is(height(node)));
+        assertValidBST(node);
+        assertValidAVL(node.leftChild);
+        assertValidAVL(node.rightChild);
+    }
 
     @Test
     public void testDelete() {
@@ -153,5 +116,21 @@ public class BinarySearchTreeTest {
         delTest(bsts[2], inputs[2]);
         delTest(bsts[3], inputs[3]);
         delTest(bsts[4], inputs[4]);
+    }
+
+    @Test
+    public void balanceTest() {
+        AVLTree<Integer> bst = new AVLTree<>();
+        for (int i = 0; i < Math.pow(2,12); i++) {
+            bst.add(i);
+            assertValidAVL(bst.root);
+        }
+
+        assertValidAVL(bst.root);
+
+        for (int i = 0; i < Math.pow(2,12); i+=100) {
+            bst.delete(i);
+            assertValidAVL(bst.root);
+        }
     }
 }

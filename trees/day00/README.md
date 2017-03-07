@@ -5,7 +5,7 @@
 ## Code
 
 1. Implement the following methods in `BinarySearchTree.java`:
-  * `public T[] inOrderTraversal(Node n)` Performs an in-order traversal of the tree whose root is `n`
+  * `public List<T> inOrderTraversal()` Performs an in-order traversal of the tree
   * `public T findSuccessor(T key)` Finds the node immediately following `n` in the in-order traversal of the entire tree
   * `public T findPredecessor(T key)` Finds the node immediately preceding `n` in the in-order traversal of the entire tree
   Run corresponding tests in `BinarySearchTreeTest.java` to make sure your implementations are correct.

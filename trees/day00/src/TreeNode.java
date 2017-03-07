@@ -22,20 +22,20 @@ public class TreeNode<T extends Comparable<T>> {
     }
 
     public boolean hasLeftChild() {
-                                 return this.leftChild != null;
-                                                               }
+        return this.leftChild != null;
+    }
 
     public boolean hasRightChild() {
-                                  return this.rightChild != null;
-                                                                 }
+        return this.rightChild != null;
+    }
 
     public boolean isRoot() {
-                           return this.parent == null;
-                                                      }
+        return this.parent == null;
+    }
 
     public boolean isLeaf() {
-                           return !this.hasLeftChild() && !this.hasRightChild();
-                                                                                }
+        return !this.hasLeftChild() && !this.hasRightChild();
+    }
 
     public void replaceWith(TreeNode<T> n) {
         if (isLeftChild())
@@ -58,13 +58,13 @@ public class TreeNode<T extends Comparable<T>> {
     }
 
     public boolean equals(TreeNode other) {
-                                    return other.key.equals(this.key);
-                                                                      }
+        return other.key.equals(this.key);
+    }
 
     @Override
     public String toString() {
         String parent = this.parent == null ? "" : ", parent=" + this.parent.key.toString();
-        String left = this.leftChild == null ? "" :  ", left=" + this.leftChild.key.toString();
+        String left = this.leftChild == null ? "" : ", left=" + this.leftChild.key.toString();
         String right = this.rightChild == null ? "" : ", right=" + this.rightChild.key.toString();
         return "TreeNode<T>{key=" + key + parent + left + right + '}';
     }
