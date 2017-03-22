@@ -1,5 +1,5 @@
 # HW 12 - AVL Trees
-[Slides](https://docs.google.com/presentation/d/1rdhKS1TZVIi0tCMRjXQo8lzQs3qN9h_olgA3YkW3BoQ) - includes link to a very slick AVL tree visualization that you can play with (last slide).
+[Slides](https://drive.google.com/open?id=1rdhKS1TZVIi0tCMRjXQo8lzQs3qN9h_olgA3YkW3BoQ) - includes link to a very slick AVL tree visualization that you can play with (last slide).
 
 ## Due Date
 Friday, March 10th, 5 PM (by the end of class). This is the last assigned homework before spring break.
