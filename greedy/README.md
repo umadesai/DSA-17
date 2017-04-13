@@ -1,5 +1,9 @@
 # Greedy Algorithms
 
+If you want a refresher on today's lecture, check out the [accompanying slides](https://drive.google.com/open?id=18X5HTVq0JEDlH9v9b0_1yA1InlN3ZeRGChd8qEHJ2Gw). If you aren't sure how to validate that a greedy algorithm always produces the correct solution, check out this [PDF](https://drive.google.com/open?id=0B_K4P69ad_l_RG9vc0VZeDhyWUk) on the greedy exchange property. Finally, if you want to watch another lecture, the [MIT lecture](https://youtu.be/2P-yW7LQr08?t=17m28s) covered some of the material we did today in class. The proof begins around [42:39](https://youtu.be/2P-yW7LQr08?t=42m39s).
+
+*Note: Not all of these problems can/should be solved using a Greedy appoach. It is up to you to determine which class of algorithm suites each problem*
+
 ## Barn Repair
 
 Farmer Katie has a barn with stalls in which her cows live. All the stalls are the same width.
